@@ -1,0 +1,227 @@
+# PL/0 文法定义 (EBNF格式)
+# ============================================
+
+# 1. 程序结构
+program = block "." ;
+
+# 2. 块（包含声明和语句）
+block = [ const_declaration ] [ var_declaration ] { procedure_declaration } statement ;
+
+# 3. 常量声明
+const_declaration = "const", ident, "=", number, { ",", ident, "=", number }, ";" ;
+
+# 4. 变量声明
+var_declaration = "var", ident, { ",", ident }, ";" ;
+
+# 5. 过程声明
+procedure_declaration = "procedure", ident, ";", block, ";" ;
+
+# 6. 语句
+statement = assignment_statement
+          | procedure_call
+          | compound_statement
+          | if_statement
+          | while_statement
+          | read_statement
+          | write_statement
+          | empty_statement
+          ;
+
+# 7. 赋值语句
+assignment_statement = ident, ":=", expression ;
+
+# 8. 过程调用
+procedure_call = "call", ident ;
+
+# 9. 复合语句
+compound_statement = "begin", statement, { ";", statement }, "end" ;
+
+# 10. 条件语句
+if_statement = "if", condition, "then", statement ;
+
+# 11. 循环语句
+while_statement = "while", condition, "do", statement ;
+
+# 12. 读语句
+read_statement = "read", ident ;
+
+# 13. 写语句
+write_statement = "write", expression ;
+
+# 14. 空语句
+empty_statement = ;  (* 空产生式 *)
+
+# 15. 条件
+condition = "odd", expression
+          | expression, relational_operator, expression
+          ;
+
+# 16. 关系运算符
+relational_operator = "=" | "#" | "<" | "<=" | ">" | ">=" ;
+
+# 17. 表达式
+expression = [ "+" | "-" ], term, { ("+" | "-"), term } ;
+
+# 18. 项
+term = factor, { ("*" | "/"), factor } ;
+
+# 19. 因子
+factor = ident
+       | number
+       | "(", expression, ")"
+       ;
+
+# 20. 标识符
+ident = letter, { letter | digit } ;
+
+# 21. 数字
+number = digit, { digit } ;
+
+# 22. 字母
+letter = "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j"
+       | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t"
+       | "u" | "v" | "w" | "x" | "y" | "z"
+       | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J"
+       | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T"
+       | "U" | "V" | "W" | "X" | "Y" | "Z"
+       ;
+
+# 23. 数字
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+
+# ============================================
+# EBNF 符号说明
+# ============================================
+
+# 符号说明：
+# =   : 定义
+# ;   : 结束规则
+# ,   : 连接（序列）
+# |   : 选择（或）
+# [ ] : 可选（0次或1次）
+# { } : 重复（0次或多次）
+# ( ) : 分组
+# " " : 终结符（字面量）
+# ' ' : 终结符（字面量）
+# (* *) : 注释
+
+# ============================================
+# PL/0 语法特性说明
+# ============================================
+
+# 注释：
+# PL/0使用花括号表示注释：{ 这是一个注释 }
+
+# 运算符优先级（从高到低）：
+# 1. ()         括号
+# 2. * /        乘除
+# 3. + -        加减
+# 4. = # < <= > >=  关系运算符
+# 5. odd        奇偶判断
+
+# 结合性：
+# 所有二元运算符都是左结合的
+
+# 作用域规则：
+# 1. 标识符必须先声明后使用
+# 2. 常量、变量、过程不能重名
+# 3. 过程可以嵌套，内层可以访问外层标识符
+# 4. 同一作用域内标识符必须唯一
+
+# 类型系统：
+# PL/0只有整数类型
+
+# 输入输出：
+# read语句：从标准输入读取整数到变量
+# write语句：将表达式值输出到标准输出
+
+# ============================================
+# PL/0 词法规则（补充）
+# ============================================
+
+# 空白字符：
+# 空格、制表符、换行符在词法分析时被忽略
+
+# 注释：
+# 注释以 "{" 开始，以 "}" 结束，可以跨越多行
+
+# 标识符：
+# 以字母开头，后跟字母或数字
+# 大小写敏感（但PL/0传统上不区分大小写）
+
+# 关键字：
+# const, var, procedure, call, begin, end, if, then,
+# while, do, read, write, odd
+
+# 运算符：
+# 赋值： :=
+# 算术： + - * /
+# 关系： = # < <= > >=
+# 奇偶： odd
+
+# 分隔符：
+# ; , . ( )
+
+# ============================================
+# PL/0 示例程序
+# ============================================
+
+(*
+{ 计算1到10的和 }
+const N = 10;
+var i, sum;
+
+begin
+    sum := 0;
+    i := 1;
+    while i <= N do
+    begin
+        sum := sum + i;
+        i := i + 1
+    end;
+    write(sum)
+end.
+*)
+
+(*
+{ 判断奇偶性 }
+var x;
+
+procedure is_odd;
+begin
+    if odd(x) then
+        write(1)
+    else
+        write(0)
+end;
+
+begin
+    read(x);
+    call is_odd
+end.
+*)
+
+(*
+{ 计算阶乘 }
+var n, result;
+
+procedure factorial;
+var temp;
+begin
+    if n = 0 then
+        result := 1
+    else
+    begin
+        temp := n;
+        n := n - 1;
+        call factorial;
+        result := result * temp
+    end
+end;
+
+begin
+    read(n);
+    call factorial;
+    write(result)
+end.
+*)

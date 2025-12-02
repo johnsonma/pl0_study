@@ -1,0 +1,22 @@
+{ 测试PL/0编译器：计算阶乘 }
+const N = 5;
+var result, i;
+
+procedure factorial;
+begin
+    if i = 0 then
+        result := 1
+    else
+    begin
+        result := result * i;
+        i := i - 1;
+        call factorial
+    end
+end;
+
+begin
+    result := 1;
+    i := N;
+    call factorial;
+    write(result)
+end.
