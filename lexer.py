@@ -19,6 +19,7 @@ class TokenType(Enum):
     END = 'END'
     IF = 'IF'
     THEN = 'THEN'
+    ELSE = 'ELSE'
     WHILE = 'WHILE'
     DO = 'DO'
     READ = 'READ'
@@ -82,6 +83,7 @@ class Lexer:
         'end': TokenType.END,
         'if': TokenType.IF,
         'then': TokenType.THEN,
+        'else': TokenType.ELSE,
         'while': TokenType.WHILE,
         'do': TokenType.DO,
         'read': TokenType.READ,
@@ -309,7 +311,7 @@ def test_lexer():
     
     print("词法分析测试:")
     print("-" * 40)
-    for i, token in enumerate(tokens[:20]):  # 只显示前20个token
+    for i, token in enumerate(tokens[:100]):  # 只显示前20个token
         print(f"{i:3}: {token}")
     
     # 统计信息

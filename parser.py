@@ -258,11 +258,17 @@ class Parser:
         self.match(TokenType.END)
     
     def parse_if_statement(self):
-        """解析条件语句: if condition then statement"""
+        """解析条件语句: if condition then statement [else statement]"""
         self.match(TokenType.IF)
         self.parse_condition()
         self.match(TokenType.THEN)
         self.parse_statement()
+        
+        # 可选的 else 子句
+        token = self.current_token()
+        if token and token.type == TokenType.ELSE:
+            self.match(TokenType.ELSE)
+            self.parse_statement()
     
     def parse_while_statement(self):
         """解析循环语句: while condition do statement"""
